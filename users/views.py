@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
 
 User = get_user_model()
 
@@ -16,3 +17,7 @@ class RegisterView(APIView):
 
         user = User.objects.create_user(username=username, password=password)
         return Response({'message': 'Usuario creado con éxito'}, status=status.HTTP_201_CREATED)
+
+# 👇 ESTA FUNCIÓN VA FUERA DE LA CLASE
+def index(request):
+    return JsonResponse({"message": "Hola desde users"}) 
