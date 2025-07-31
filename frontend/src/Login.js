@@ -7,33 +7,34 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [token, setToken] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = isRegistering
       ? 'http://localhost:8000/api/register/' // endpoint para registro
       : 'http://localhost:8000/api/login/';   // endpoint para login
-
     try {
       const response = await axios.post(url, {
         username,
-        password,
+        password
       });
-
       if (isRegistering) {
         setMessage('Registro exitoso. Ahora puedes iniciar sesión.');
       } else {
         setMessage('Inicio de sesión exitoso.');
-        console.log('Token recibido:', response.data);
+        setToken(response.data.access);  // Guarda el token JWT
+        console.log('Token:', response.data.access);
       }
     } catch (error) {
-      setMessage('Error: ' + (error.response?.data?.error || error.message));
+      setMessage('Hubo un error. Verifica tus datos.');
     }
   };
 
   return (
     <div>
-      <h2>{isRegistering ? 'Registro' : 'Inicio de sesión'}</h2>
+      <h1 className="cecyflix-logo">CECYFLIX</h1>
+      <h2>{isRegistering ? 'Crear cuenta' : 'Iniciar sesión'}</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -49,12 +50,20 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">{isRegistering ? 'Registrar' : 'Iniciar sesión'}</button>
+        <button type="submit">
+          {isRegistering ? 'Registrarse' : 'Ingresar'}
+        </button>
       </form>
-      <button onClick={() => setIsRegistering(!isRegistering)}>
-        {isRegistering ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
-      </button>
-      {message && <p>{message}</p>}
+      <p>{message}</p>
+      <p>
+        {isRegistering ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
+        <span
+          onClick={() => setIsRegistering(!isRegistering)}
+          style={{ color: '#e50914', cursor: 'pointer' }}
+        >
+          {isRegistering ? 'Inicia sesión' : 'Regístrate'}
+        </span>
+      </p>
     </div>
   );
 };
